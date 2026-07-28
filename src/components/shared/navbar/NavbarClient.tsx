@@ -11,6 +11,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import ActiveLink from "./ActiveLink";
 
 interface NavLink {
   href: string;
@@ -122,14 +123,14 @@ export default function NavbarClient({ navLinks }: NavbarClientProps) {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 space-y-1 shadow-lg z-40">
           {navLinks.map((link) => (
-            <Link
+            <ActiveLink
               key={link.href}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-[#0F4C81] dark:hover:text-sky-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             >
               {link.label}
-            </Link>
+            </ActiveLink>
           ))}
         </div>
       )}

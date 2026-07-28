@@ -1,6 +1,7 @@
 import Link from "next/link";
 import NavbarClient from "./NavbarClient";
 import Logo from "./Logo";
+import ActiveLink from "./ActiveLink";
 
 export default function Navbar() {
   const navLinks = [
@@ -22,13 +23,13 @@ export default function Navbar() {
           {/* Center: Navigation Links */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
+              <ActiveLink
                 key={link.href}
                 href={link.href}
                 className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-[#0F4C81] dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
               >
                 {link.label}
-              </Link>
+              </ActiveLink>
             ))}
           </div>
 
