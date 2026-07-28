@@ -57,8 +57,8 @@ const slides: SlideData[] = [
 
 export default function Banner() {
   return (
-    <section className="relative w-full bg-slate-50/60 dark:bg-slate-950 py-8 lg:py-16 overflow-hidden transition-colors duration-200">
-      <div className="max-w-7xl mx-auto sm:px-3 lg:px-8">
+    <section className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-slate-50 dark:bg-[#0a0f1d] py-8 lg:py-16 overflow-hidden transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-8 sm:px-9 lg:px-8">
         <HeroBannerClient slides={slides} />
       </div>
     </section>
