@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useActionState, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import LoginAction from "../_actions/LoginAction";
+import { toast } from "sonner";
 
 export default function LoginCard() {
   const [state, formAction, isPending] = useActionState(LoginAction, null);
@@ -24,6 +30,21 @@ export default function LoginCard() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  useEffect(() => {
+    if (!state) return;
+    if (state.success) {
+      toast.success(state.message || "Login successful");
+      startTransition(() => {
+        setFormData({
+          email: "",
+          password: "",
+        });
+      });
+    }
+    if (!state.success) {
+      toast.error(state.message || "LogIn Failed");
+    }
+  }, [state]);
 
   return (
     <Card className="w-full max-w-md shadow-xl border-slate-200/80 dark:border-slate-800">
