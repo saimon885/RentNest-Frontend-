@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Lock, Mail, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { startTransition } from "react";
 import {
   Card,
   CardContent,
@@ -11,8 +12,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import RegisterAction from "../_actions/RegisterAction";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export default function RegisterCard() {
+  const [state, formAction, isPending] = useActionState(RegisterAction, null);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,37 +27,33 @@ export default function RegisterCard() {
     role: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.password ||
-      !formData.role
-    ) {
-      setError("field required!");
-      return;
+  useEffect(() => {
+    if (!state) return;
+    if (state.success) {
+      toast.success(state.message || "Register successful");
+      startTransition(() => {
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          role: "",
+        });
+      });
+      redirect("/login");
     }
-
-    if (formData.password.length < 6) {
-      setError("password must be 5 charector!");
-      return;
+    if (!state.success) {
+      toast.error(state.message || "Register Failed");
     }
-
-    console.log("Submitted Payload:", formData);
-    alert("Registration Successful!");
-  };
+  }, [state]);
 
   return (
     <Card className="w-full max-w-md shadow-xl border-slate-200/80 dark:border-slate-800">
@@ -61,10 +64,16 @@ export default function RegisterCard() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="p-3 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-md">
-              {error}
+        <form action={formAction} className="space-y-4">
+          {state?.success === false && (
+            <div className="p-3 text-sm font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+              {state.message}
+            </div>
+          )}
+
+          {state?.success === true && (
+            <div className="p-3 text-sm font-medium text-green-600 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-md">
+              {state.message}
             </div>
           )}
 
@@ -78,6 +87,7 @@ export default function RegisterCard() {
                 type="text"
                 name="name"
                 placeholder="your name"
+                required
                 value={formData.name}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition"
@@ -95,6 +105,7 @@ export default function RegisterCard() {
                 type="email"
                 name="email"
                 placeholder="your email"
+                required
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition"
@@ -112,6 +123,7 @@ export default function RegisterCard() {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
+                required
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full pl-9 pr-10 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition"
@@ -139,6 +151,7 @@ export default function RegisterCard() {
               <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
               <select
                 name="role"
+                required
                 value={formData.role}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition cursor-pointer appearance-none text-slate-900 dark:text-slate-100"
@@ -159,8 +172,9 @@ export default function RegisterCard() {
               </select>
             </div>
           </div>
-          <Button type="submit" className="w-full mt-2">
-            Register
+
+          <Button type="submit" disabled={isPending} className="w-full mt-2">
+            {isPending ? "Registering..." : "Register"}
           </Button>
         </form>
       </CardContent>

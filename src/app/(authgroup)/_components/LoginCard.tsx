@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useActionState, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,31 +11,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import LoginAction from "../_actions/LoginAction";
 
 export default function LoginCard() {
+  const [state, formAction, isPending] = useActionState(LoginAction, null);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.email || !formData.password) {
-      setError("email and password must be required!");
-      return;
-    }
-
-    console.log("Login Payload:", formData);
-    alert("Login Successful!");
   };
 
   return (
@@ -47,14 +34,19 @@ export default function LoginCard() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="p-3 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded-md">
-              {error}
+        <form action={formAction} className="space-y-4">
+          {state?.success === false && (
+            <div className="p-3 text-sm font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+              {state.message}
             </div>
           )}
 
-          {/* Email Input */}
+          {state?.success === true && (
+            <div className="p-3 text-sm font-medium text-green-600 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-md">
+              {state.message}
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
               Email Address
@@ -65,6 +57,7 @@ export default function LoginCard() {
                 type="email"
                 name="email"
                 placeholder="your email"
+                required
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full pl-9 pr-3 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition"
@@ -72,7 +65,6 @@ export default function LoginCard() {
             </div>
           </div>
 
-          {/* Password Input */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
@@ -88,6 +80,7 @@ export default function LoginCard() {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
+                required
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full pl-9 pr-10 py-2 text-sm bg-transparent border border-slate-300 dark:border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-sky-400 transition"
@@ -107,8 +100,8 @@ export default function LoginCard() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full mt-2">
-            Sign In
+          <Button type="submit" disabled={isPending} className="w-full mt-2">
+            {isPending ? "Signing In..." : "Sign In"}
           </Button>
         </form>
       </CardContent>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "RentNest",
@@ -20,6 +21,7 @@ export default function RootLayout({
         {/* <header>
           <Navbar></Navbar>
         </header> */}
+        <Toaster position="top-right" richColors />
         {children}
       </body>
     </html>
