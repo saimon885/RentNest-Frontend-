@@ -15,6 +15,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Editprofile from "../_components/profile/Editprofile";
 export interface UserProfile {
   name: string;
   email: string;
@@ -94,12 +95,7 @@ const Profile = async () => {
 
               {/* Action Button */}
               <div className="sm:mb-2">
-                <Button size="sm" className="gap-2 rounded-lg">
-                  <Link href="/profile/edit">
-                    <Edit size={16} />
-                    Edit Profile
-                  </Link>
-                </Button>
+                <Editprofile></Editprofile>
               </div>
             </div>
           </CardContent>
