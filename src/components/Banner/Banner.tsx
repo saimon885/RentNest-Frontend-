@@ -1,5 +1,6 @@
 import React from "react";
 import HeroBannerClient from "./HeroBannerClient";
+import { GetMyProfile } from "@/services/GetMyProfie";
 
 export interface SlideData {
   id: number;

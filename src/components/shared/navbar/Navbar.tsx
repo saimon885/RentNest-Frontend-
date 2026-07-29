@@ -3,7 +3,26 @@ import NavbarClient from "./NavbarClient";
 import Logo from "./Logo";
 import ActiveLink from "./ActiveLink";
 
-export default function Navbar() {
+type UserRole = "TENANT" | "LANDLORD";
+export interface getMyProfile {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    role: UserRole;
+    isBanned: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface getMe {
+  profile: getMyProfile;
+}
+
+export default function Navbar({ profile }: getMe) {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/properties", label: "Properties" },
@@ -34,7 +53,7 @@ export default function Navbar() {
           </div>
 
           {/* Right: Client Interactivity */}
-          <NavbarClient navLinks={navLinks} />
+          <NavbarClient user={profile} navLinks={navLinks} />
         </div>
       </div>
     </nav>
