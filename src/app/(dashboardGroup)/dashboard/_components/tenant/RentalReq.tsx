@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import PayNowBTN from "./PayNowBTN";
 
 export type RentalStatus =
   | "PENDING"
@@ -161,12 +162,7 @@ const RentalReq = async () => {
 
             <CardFooter className="pt-3 border-t bg-muted/20">
               {rental.status === "APPROVED" && (
-                <Button
-                  size="sm"
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  Pay Now
-                </Button>
+                <PayNowBTN id={rental.id}></PayNowBTN>
               )}
 
               {rental.status === "ACTIVE" && (
