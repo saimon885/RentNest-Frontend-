@@ -1,15 +1,13 @@
-import React from "react";
+import { GetMyProfile } from "@/services/GetMyProfie";
 import { DashboardShell } from "./_components/dashboard-client";
 
-export const metadata = {
-  title: "Dashboard | Acme",
-  description: "Management portal and user dashboard",
-};
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return <DashboardShell>{children}</DashboardShell>;
+}) {
+  const getUser = await GetMyProfile();
+  const userRole = getUser?.data?.role;
+
+  return <DashboardShell role={userRole}>{children}</DashboardShell>;
 }

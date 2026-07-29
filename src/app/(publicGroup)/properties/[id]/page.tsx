@@ -14,6 +14,9 @@ import {
 import PropertyGallery from "../../_components/properties/PropertyGallery";
 import PropertyDetailsSkeleton from "../../_components/properties/PropertyDetailsSkeleton";
 import BackButton from "../../_components/properties/BackButton";
+import RentalReqButton from "../../_components/rental/RentalReqButton";
+import { GetMyProfile } from "@/services/GetMyProfie";
+import Link from "next/link";
 
 interface PropertiesProp {
   params: Promise<{
@@ -21,7 +24,7 @@ interface PropertiesProp {
   }>;
 }
 
-interface PropertyData {
+export interface PropertyData {
   id: string;
   title: string;
   description: string;
@@ -61,6 +64,9 @@ async function PropertyDetailsContent({ id }: { id: string }) {
 
   const response = await res.json();
   const property: PropertyData = response.data;
+
+  const getuser = await GetMyProfile();
+  const userROle = getuser?.data?.role;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-4">
@@ -182,20 +188,28 @@ async function PropertyDetailsContent({ id }: { id: string }) {
               </div>
 
               <div className="space-y-2.5">
-                <Button
-                  disabled={!property.isAvailable}
-                  className="w-full font-semibold py-5 rounded-lg shadow-2xs cursor-pointer text-sm"
-                  size="default"
-                >
-                  {property.isAvailable ? "Request Booking" : "Not Available"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full gap-2 rounded-lg py-5 font-medium cursor-pointer text-sm"
-                  size="default"
-                >
-                  <Mail className="h-3.5 w-3.5 text-primary" /> Contact Landlord
-                </Button>
+                {getuser?.success ? (
+                  userROle === "TENANT" ? (
+                    <RentalReqButton property={property} />
+                  ) : (
+                    <Button
+                      disabled
+                      className="w-full font-semibold py-5 rounded-lg shadow-2xs text-sm opacity-60"
+                      size="default"
+                    >
+                      Only Tenants Can Request
+                    </Button>
+                  )
+                ) : (
+                  <Link href="/login" className="w-full">
+                    <Button
+                      className="w-full font-semibold py-5 rounded-lg shadow-2xs cursor-pointer text-sm"
+                      size="default"
+                    >
+                      Login to Request
+                    </Button>
+                  </Link>
+                )}
               </div>
 
               <div className="rounded-lg bg-muted/50 p-3 space-y-2 text-[11px] text-muted-foreground border border-border/40">
