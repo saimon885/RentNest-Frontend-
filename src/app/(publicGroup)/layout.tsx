@@ -7,7 +7,7 @@ const PublicLayout = async ({
   children: React.ReactNode;
 }>) => {
   const profile = await GetMyProfile();
-  console.log(profile);
+  // console.log(profile);
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar profile={profile} />

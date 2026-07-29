@@ -39,7 +39,7 @@ const LoginAction = async (
     });
   }
   const deccodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
-  console.log(deccodedToken);
+//   console.log(deccodedToken);
   if (deccodedToken.role === "TENANT") {
     redirect("/tenant-dashboard");
   } else if (deccodedToken.role === "LANDLORD") {

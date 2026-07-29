@@ -33,7 +33,7 @@ export async function updateProfileName(formData: FormData) {
 
     return { success: true };
   } catch (error) {
-    console.error("Profile update error:", error);
+    // console.error("Profile update error:", error);
     return { success: false, error: "Something went wrong" };
   }
 }

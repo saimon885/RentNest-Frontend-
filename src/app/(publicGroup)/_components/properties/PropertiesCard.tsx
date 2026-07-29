@@ -128,12 +128,15 @@ const PropertiesCard = ({ property }: PropertiesCardProps) => {
           </p>
         </div>
 
-        <Button size="sm" className="mt-3 gap-1 rounded-lg">
-          <Link href={`/properties/${id}`}>
+        <button className="mt-3 gap-1 rounded-lg">
+          <Link
+            href={`/properties/${id}`}
+            className="mt-4 w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm transition-all shadow-sm active:scale-[0.98]"
+          >
             Details
-            <ArrowUpRight className="h-3.5 w-3.5" />
+            <ArrowUpRight className="h-4 w-4" />
           </Link>
-        </Button>
+        </button>
       </CardFooter>
     </Card>
   );
