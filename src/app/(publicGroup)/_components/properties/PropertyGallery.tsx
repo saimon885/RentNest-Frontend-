@@ -14,42 +14,47 @@ export default function PropertyGallery({
   title,
 }: PropertyGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(
-    images[0] || "/placeholder.jpg",
+    images[0] || "https://images.unsplash.com/photo-1560518883-ce09059eeffa",
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="relative md:col-span-2 aspect-[16/10] rounded-2xl overflow-hidden border bg-muted shadow-sm">
+    <div className="space-y-2.5">
+      {/* Compact Main Image */}
+      <div className="relative w-full h-[240px] sm:h-[320px] md:h-[360px] rounded-xl overflow-hidden border bg-muted shadow-xs">
         <Image
           src={selectedImage}
           alt={title}
           fill
           priority
+          sizes="(max-width: 768px) 100vw, 700px"
           className="object-cover transition-all duration-300"
         />
       </div>
 
-      <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[450px] pb-2 md:pb-0 scrollbar-thin">
-        {images.map((img, idx) => (
-          <button
-            key={idx}
-            onClick={() => setSelectedImage(img)}
-            className={cn(
-              "relative h-24 w-28 md:w-full flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200 focus:outline-none",
-              selectedImage === img
-                ? "border-primary ring-2 ring-primary/20 scale-[0.98]"
-                : "border-transparent opacity-70 hover:opacity-100",
-            )}
-          >
-            <Image
-              src={img}
-              alt={`${title} view ${idx + 1}`}
-              fill
-              className="object-cover"
-            />
-          </button>
-        ))}
-      </div>
+      {/* Thumbnails Row */}
+      {images && images.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          {images.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedImage(img)}
+              className={cn(
+                "relative h-16 w-24 sm:h-20 sm:w-28 flex-shrink-0 rounded-lg overflow-hidden border transition-all duration-200 focus:outline-none cursor-pointer",
+                selectedImage === img
+                  ? "border-primary ring-2 ring-primary/20 opacity-100 scale-[0.98]"
+                  : "border-transparent opacity-60 hover:opacity-100",
+              )}
+            >
+              <Image
+                src={img}
+                alt={`${title} thumbnail ${idx + 1}`}
+                fill
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

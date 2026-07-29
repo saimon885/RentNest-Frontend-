@@ -95,7 +95,7 @@ const Profile = async () => {
 
               {/* Action Button */}
               <div className="sm:mb-2">
-                <Editprofile></Editprofile>
+                <Editprofile user={user}></Editprofile>
               </div>
             </div>
           </CardContent>
