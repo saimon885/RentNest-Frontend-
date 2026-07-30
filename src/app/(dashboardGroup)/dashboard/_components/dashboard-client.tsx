@@ -8,7 +8,6 @@ import {
   Users,
   Building,
   CreditCard,
-  FileText,
   Settings,
   Menu,
   UserCheck,
@@ -56,7 +55,6 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     href: "/dashboard/admin/properties",
     icon: Building,
   },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 const NAV_BY_ROLE: Record<string, NavItem[]> = {
@@ -125,7 +123,7 @@ export function SidebarContent({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center px-4">
+      <div className="flex h-14 items-center px-4 shrink-0">
         <Logo />
       </div>
 
@@ -164,7 +162,7 @@ export function Header({
     : "";
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 w-full items-center gap-3 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-6">
       <Button
         variant="ghost"
         size="icon"
@@ -196,13 +194,15 @@ export function DashboardShell({
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
 
   return (
-    <div className="flex min-h-screen w-full bg-muted/20">
+    <div className="relative flex min-h-screen w-full max-w-full overflow-x-hidden bg-muted/20">
+      {/* Desktop Sidebar */}
       <aside className="hidden w-64 shrink-0 border-r bg-background lg:block">
-        <div className="fixed h-screen w-64">
+        <div className="sticky top-0 h-screen w-64">
           <SidebarContent role={role} />
         </div>
       </aside>
 
+      {/* Mobile Sidebar */}
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <SheetContent side="left" className="w-72 p-0">
           <SheetTitle className="sr-only">Navigation menu</SheetTitle>
@@ -213,9 +213,12 @@ export function DashboardShell({
         </SheetContent>
       </Sheet>
 
-      <div className="flex min-h-screen flex-1 flex-col">
+      {/* Main Content Area */}
+      <div className="flex min-h-screen flex-1 flex-col w-full max-w-full min-w-0 overflow-x-hidden">
         <Header role={role} onOpenMobileNav={() => setMobileNavOpen(true)} />
-        <main className="flex-1 p-4 lg:p-6">{children}</main>
+        <main className="flex-1 p-3 md:p-6 w-full max-w-full min-w-0 overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );

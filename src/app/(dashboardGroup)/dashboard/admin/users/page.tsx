@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import React from "react";
-import { UserCheck, ShieldAlert, Ban, CheckCircle2, UserX } from "lucide-react";
+import { UserCheck, Ban, CheckCircle2, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,9 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import BannedBtn from "../../_components/admin-properties/BannedBtn";
 
 type User = {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   role: "ADMIN" | "LANDLORD" | "TENANT" | string;
@@ -41,7 +42,7 @@ const AllUsers = async () => {
   const bannedUsers = users.filter((u) => u.isBanned).length;
 
   return (
-    <div className="space-y-6 p-2 md:p-6">
+    <div className="w-full max-w-full min-w-0 space-y-6 p-2 md:p-6 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -97,17 +98,17 @@ const AllUsers = async () => {
         </Card>
       </div>
 
-      <Card className="border-border/50 shadow-xs overflow-hidden">
+      <Card className="w-full max-w-full border-border/50 shadow-xs overflow-hidden">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="w-full max-w-full overflow-x-auto touch-pan-x scrollbar-thin">
+            <Table className="w-full min-w-[600px] table-fixed">
               <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead>User Details</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Joined Date</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
+                  <TableHead className="w-[200px]">User Details</TableHead>
+                  <TableHead className="w-[100px]">Role</TableHead>
+                  <TableHead className="w-[100px]">Status</TableHead>
+                  <TableHead className="w-[120px]">Joined Date</TableHead>
+                  <TableHead className="w-[100px] text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -125,11 +126,11 @@ const AllUsers = async () => {
                     return (
                       <TableRow key={userId} className="hover:bg-muted/20">
                         <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-foreground">
+                          <div className="flex flex-col overflow-hidden">
+                            <span className="font-semibold text-foreground truncate">
                               {item.name}
                             </span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-muted-foreground truncate">
                               {item.email}
                             </span>
                           </div>
@@ -170,23 +171,10 @@ const AllUsers = async () => {
                         </TableCell>
 
                         <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant={item.isBanned ? "outline" : "destructive"}
-                            className="h-8 text-xs font-medium cursor-pointer"
-                          >
-                            {item.isBanned ? (
-                              <>
-                                <CheckCircle2 className="mr-1 h-3.5 w-3.5" />
-                                Unban
-                              </>
-                            ) : (
-                              <>
-                                <Ban className="mr-1 h-3.5 w-3.5" />
-                                Ban
-                              </>
-                            )}
-                          </Button>
+                          <BannedBtn
+                            id={item.id}
+                            isBanned={item.isBanned}
+                          ></BannedBtn>
                         </TableCell>
                       </TableRow>
                     );
