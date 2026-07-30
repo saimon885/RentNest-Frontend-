@@ -21,6 +21,10 @@ import {
   DollarSign,
   MapPin,
 } from "lucide-react";
+import {
+  crateProperty,
+  PropertyPayload,
+} from "../../_actions/Landlord/CreatePropertyA";
 
 export type Category = {
   id: string;
@@ -76,7 +80,7 @@ export default function CreatePropertyForm({
     setFormData((prev) => ({ ...prev, [field]: updated }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const payload = {
@@ -89,7 +93,10 @@ export default function CreatePropertyForm({
       images: formData.images.filter((item) => item.trim() !== ""),
     };
 
-    console.log("Property Payload:", payload);
+    const res = await crateProperty({ payload });
+    if (res.success) {
+      alert("property added successfull");
+    }
   };
 
   return (

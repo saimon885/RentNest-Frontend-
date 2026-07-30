@@ -10,6 +10,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import DeleteProperty from "./DeleteProperty";
 
 export type LandlordProperty = {
   id: string;
@@ -105,14 +106,7 @@ const GetLandlordProperties = ({
                 <Pencil className="h-3.5 w-3.5 mr-1" />
                 Edit
               </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="flex-1 h-8 text-xs font-medium cursor-pointer"
-              >
-                <Trash2 className="h-3.5 w-3.5 mr-1" />
-                Delete
-              </Button>
+              <DeleteProperty propertyId={property.id}></DeleteProperty>
             </div>
           </CardContent>
         </Card>
