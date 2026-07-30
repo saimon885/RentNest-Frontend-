@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtutils } from "./utils/jwt";
 const AUTH_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/", "/properties"];
 export async function proxy(request: NextRequest) {
-  const pathaName = request.nextUrl.pathname;
+  const pathName = request.nextUrl.pathname;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
 
@@ -17,7 +18,7 @@ export async function proxy(request: NextRequest) {
     UserRole = decoddedAccessToken.data.role;
   }
 
-  if (accessToken && AUTH_ROUTES.includes(pathaName)) {
+  if (accessToken && AUTH_ROUTES.includes(pathName)) {
     if (UserRole === "TENANT") {
       return NextResponse.redirect(new URL("/", request.url));
     } else if (UserRole === "LANDLORD") {
@@ -26,6 +27,33 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
+  // authenticated routes
+  const isPublicRoutes = PUBLIC_ROUTES.some((route) => {
+    return pathName === route || pathName.startsWith(route + "/");
+  });
+
+  const isAuthRoutes = AUTH_ROUTES.some(
+    (routes) => pathName === routes || routes.startsWith(routes + "/"),
+  );
+
+  if (!accessToken && !isPublicRoutes && !isAuthRoutes) {
+    const loginUrl = new URL("/login", request.url);
+    // loginUrl.searchParams.set("redirectTo", pathName);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Authorized Route access
+  if (pathName.startsWith("/dashboard/tenant") && UserRole !== "TENANT") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  } else if (pathName.startsWith("/dashboard/admin") && UserRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  } else if (
+    pathName.startsWith("/dashboard/LANDLORD") &&
+    UserRole !== "LANDLORD"
+  ) {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
   return NextResponse.next();
 }
 

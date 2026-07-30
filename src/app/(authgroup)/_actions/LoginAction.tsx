@@ -39,13 +39,13 @@ const LoginAction = async (
     });
   }
   const deccodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
-//   console.log(deccodedToken);
+  //   console.log(deccodedToken);
   if (deccodedToken.role === "TENANT") {
-    redirect("/tenant-dashboard");
+    redirect("/dashboard/tenant");
   } else if (deccodedToken.role === "LANDLORD") {
     redirect("/tenant-dashboard");
   } else if (deccodedToken.role === "ADMIN") {
-    redirect("/tenant-dashboard");
+    redirect("/dashboard/admin");
   }
   return result;
 };
