@@ -49,7 +49,7 @@ export const LANDLORD_NAV_ITEMS: NavItem[] = [
 ];
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
   { label: "Manage Users", href: "/dashboard/admin/users", icon: Users },
   {
     label: "All Properties",
