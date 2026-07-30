@@ -6,7 +6,7 @@ import React from "react";
 const HomeProperties = async () => {
   const data = await fetch(`${process.env.SERVER_API_URL}/api/properties`);
   const allProperties = await data.json();
-  const properties: Property[] = allProperties?.data.slice(0, 6);
+  const properties: Property[] = allProperties?.data?.slice(0, 6);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

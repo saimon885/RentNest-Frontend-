@@ -10,6 +10,7 @@ import {
   Bell,
   Menu,
   X,
+  LayoutDashboard,
 } from "lucide-react";
 import ActiveLink from "./ActiveLink";
 import { getMe, getMyProfile } from "./Navbar";
@@ -88,12 +89,20 @@ export default function NavbarClient({ user, navLinks }: NavbarClientProps) {
                 </Link>
 
                 <Link
-                  href="/settings"
+                  href={
+                    user?.data?.role === "TENANT"
+                      ? "/dashboard/tenant"
+                      : user?.data?.role === "LANDLORD"
+                        ? "/dashboard/landlord"
+                        : user?.data?.role === "ADMIN"
+                          ? "/dashboard/admin"
+                          : "/"
+                  }
                   onClick={() => setIsDropdownOpen(false)}
                   className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition"
                 >
-                  <Settings size={16} />
-                  <span>Settings</span>
+                  <LayoutDashboard size={16} />
+                  <span>Dashboard</span>
                 </Link>
 
                 <Link

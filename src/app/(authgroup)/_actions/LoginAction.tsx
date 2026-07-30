@@ -43,7 +43,7 @@ const LoginAction = async (
   if (deccodedToken.role === "TENANT") {
     redirect("/dashboard/tenant");
   } else if (deccodedToken.role === "LANDLORD") {
-    redirect("/tenant-dashboard");
+    redirect("/dashboard/landlord");
   } else if (deccodedToken.role === "ADMIN") {
     redirect("/dashboard/admin");
   }

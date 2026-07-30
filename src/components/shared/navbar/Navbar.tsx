@@ -3,7 +3,7 @@ import NavbarClient from "./NavbarClient";
 import Logo from "./Logo";
 import ActiveLink from "./ActiveLink";
 
-type UserRole = "TENANT" | "LANDLORD";
+type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
 export interface getMyProfile {
   success: boolean;
   message: string;
