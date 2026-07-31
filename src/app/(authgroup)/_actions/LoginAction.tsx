@@ -10,12 +10,13 @@ export type LoginResponse = {
 };
 
 const LoginAction = async (
+  redirectTo: string,
   prevState: LoginResponse | null,
   formData: FormData,
 ): Promise<LoginResponse> => {
   const email = formData.get("email");
   const password = formData.get("password")?.toString();
-
+  console.log("server", redirectTo);
   const payload = { email, password };
 
   if (!email || !password) {
@@ -39,6 +40,14 @@ const LoginAction = async (
     });
   }
   const deccodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
+  if (
+    redirectTo &&
+    typeof redirectTo === "string" &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//")
+  ) {
+    redirect(redirectTo);
+  }
   //   console.log(deccodedToken);
   if (deccodedToken.role === "TENANT") {
     redirect("/dashboard/tenant");

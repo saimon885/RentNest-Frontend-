@@ -38,7 +38,7 @@ export async function proxy(request: NextRequest) {
 
   if (!accessToken && !isPublicRoutes && !isAuthRoutes) {
     const loginUrl = new URL("/login", request.url);
-    // loginUrl.searchParams.set("redirectTo", pathName);
+    loginUrl.searchParams.set("redirectTo", pathName);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -48,7 +48,7 @@ export async function proxy(request: NextRequest) {
   } else if (pathName.startsWith("/dashboard/admin") && UserRole !== "ADMIN") {
     return NextResponse.redirect(new URL("/not-found", request.url));
   } else if (
-    pathName.startsWith("/dashboard/LANDLORD") &&
+    pathName.startsWith("/dashboard/landlord") &&
     UserRole !== "LANDLORD"
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));

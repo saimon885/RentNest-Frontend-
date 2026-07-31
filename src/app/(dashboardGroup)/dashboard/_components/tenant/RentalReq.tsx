@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import PayNowBTN from "./PayNowBTN";
+import ReviewBTN from "./ReviewBTN";
 
 export type RentalStatus =
   | "PENDING"
@@ -165,10 +166,13 @@ const RentalReq = async () => {
                 <PayNowBTN id={rental.id}></PayNowBTN>
               )}
 
-              {rental.status === "ACTIVE" && (
+              {/* {rental.status === "ACTIVE" && (
                 <Button size="sm" variant="outline" className="w-full">
                   Leave Review
                 </Button>
+              )} */}
+              {rental.status === "COMPLETED" && (
+                <ReviewBTN propertyId={rental.propertyId}></ReviewBTN>
               )}
 
               {rental.status !== "APPROVED" && rental.status !== "ACTIVE" && (

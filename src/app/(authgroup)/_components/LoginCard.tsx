@@ -18,9 +18,15 @@ import {
 } from "@/components/ui/card";
 import LoginAction from "../_actions/LoginAction";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginCard() {
-  const [state, formAction, isPending] = useActionState(LoginAction, null);
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? "";
+  const [state, formAction, isPending] = useActionState(
+    LoginAction.bind(null, redirectTo),
+    null,
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",

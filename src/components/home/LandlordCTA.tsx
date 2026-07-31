@@ -46,10 +46,7 @@ export const LandlordCTA = () => {
             </div>
 
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4 justify-center items-stretch lg:items-end">
-              <Link
-                href="/dashboard/landlord/properties/create"
-                className="w-full"
-              >
+              <Link href="/dashboard/landlord/properties" className="w-full">
                 <Button
                   size="lg"
                   variant="secondary"

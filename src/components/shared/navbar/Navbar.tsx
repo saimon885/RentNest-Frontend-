@@ -27,7 +27,6 @@ export default function Navbar({ profile }: getMe) {
     { href: "/", label: "Home" },
     { href: "/properties", label: "Properties" },
     { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact" },
   ];
 
   return (
