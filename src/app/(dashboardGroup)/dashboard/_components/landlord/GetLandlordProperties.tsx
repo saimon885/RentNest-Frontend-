@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import DeleteProperty from "./DeleteProperty";
 import EditProperty, { PropertyListing } from "./EditProperty";
+import { GetCategory } from "../../_actions/Landlord/CateGory";
 
 export type LandlordProperty = {
   id: string;
@@ -24,11 +25,13 @@ export type LandlordProperty = {
   };
 };
 
-const GetLandlordProperties = ({
+const GetLandlordProperties = async ({
   properties,
 }: {
   properties: LandlordProperty[];
 }) => {
+  const result = await GetCategory();
+  const categories = result?.data || [];
   if (!properties || properties.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 border border-dashed rounded-lg text-center bg-card">
@@ -100,6 +103,7 @@ const GetLandlordProperties = ({
 
             <div className="flex items-center gap-2 pt-2 border-t border-border/40">
               <EditProperty
+                categories={categories}
                 property={property as PropertyListing}
               ></EditProperty>
               <DeleteProperty propertyId={property.id}></DeleteProperty>

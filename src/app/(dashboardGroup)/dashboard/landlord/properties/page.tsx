@@ -2,27 +2,10 @@
 import { cookies } from "next/headers";
 import React from "react";
 import CreatePropertyForm from "../../_components/landlord/CreatePropertyForm";
+import { GetCategory } from "../../_actions/Landlord/CateGory";
 
 const Createproperty = async () => {
-  const cookieStore = await cookies();
-  const accessToken = await cookieStore.get("accessToken")?.value;
-
-  if (!accessToken) {
-    return (
-      <div className="p-6 text-center text-sm text-destructive">
-        User not logged in
-      </div>
-    );
-  }
-
-  const res = await fetch(
-    `${process.env.SERVER_API_URL}/api/properties/categories`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  const result = await res.json();
+  const result = await GetCategory();
   const categories = result?.data || [];
 
   return (

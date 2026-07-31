@@ -1,8 +1,21 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Wallet, Home } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Wallet,
+  Home,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  CheckCheck,
+} from "lucide-react";
+import { rentalReq } from "../../_actions/Landlord/RentalReq";
+import { toast } from "sonner";
 
 export type RequestProperty = {
   title: string;
@@ -14,7 +27,7 @@ export type RentalRequestType = {
   id: string;
   startDate: string;
   endDate: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED";
+  status: "PENDING" | "APPROVED" | "REJECT" | "COMPLETED";
   property: RequestProperty;
 };
 
@@ -30,7 +43,7 @@ const getStatusBadge = (status: RentalRequestType["status"]) => {
       );
     case "COMPLETED":
       return <Badge className="bg-blue-600 hover:bg-blue-700">Completed</Badge>;
-    case "REJECTED":
+    case "REJECT":
       return <Badge variant="destructive">Rejected</Badge>;
     default:
       return (
@@ -50,7 +63,16 @@ const formatDate = (dateString: string) => {
 };
 
 export const RequestCard = ({ request }: RequestCardProps) => {
-  const { startDate, endDate, status, property } = request;
+  const { id, startDate, endDate, status, property } = request;
+
+  const handleStatusChange = async (newStatus: RentalRequestType["status"]) => {
+    const res = await rentalReq({ id, status: newStatus });
+    if (res?.success || res?.ok) {
+      toast.success(res?.message || "Request updated successfully!");
+    } else {
+      toast.error(res?.message || "Request update failed.");
+    }
+  };
 
   return (
     <Card className="hover:shadow-md transition-shadow border-border/60">
@@ -86,10 +108,51 @@ export const RequestCard = ({ request }: RequestCardProps) => {
           </div>
         </div>
 
-        <div className="pt-2 border-t border-border/40 flex gap-2">
-          <Button size="sm" className="w-full">
-            Change Status
-          </Button>
+        <div className="pt-3 border-t border-border/40 space-y-1.5">
+          <p className="text-[10px] font-medium text-muted-foreground">
+            Change Status:
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+            <Button
+              size="sm"
+              variant={status === "PENDING" ? "default" : "outline"}
+              className="h-7 text-[10px] px-1.5 gap-1 shrink-0 cursor-pointer"
+              onClick={() => handleStatusChange("PENDING")}
+            >
+              <Clock className="h-3 w-3 text-amber-500 shrink-0" />
+              <span className="truncate">Pending</span>
+            </Button>
+
+            <Button
+              size="sm"
+              variant={status === "APPROVED" ? "default" : "outline"}
+              className="h-7 text-[10px] px-1.5 gap-1 shrink-0 cursor-pointer"
+              onClick={() => handleStatusChange("APPROVED")}
+            >
+              <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0" />
+              <span className="truncate">Approve</span>
+            </Button>
+
+            <Button
+              size="sm"
+              variant={status === "REJECT" ? "default" : "outline"}
+              className="h-7 text-[10px] px-1.5 gap-1 shrink-0 cursor-pointer"
+              onClick={() => handleStatusChange("REJECT")}
+            >
+              <XCircle className="h-3 w-3 text-destructive shrink-0" />
+              <span className="truncate">Reject</span>
+            </Button>
+
+            <Button
+              size="sm"
+              variant={status === "COMPLETED" ? "default" : "outline"}
+              className="h-7 text-[10px] px-1.5 gap-1 shrink-0 cursor-pointer"
+              onClick={() => handleStatusChange("COMPLETED")}
+            >
+              <CheckCheck className="h-3 w-3 text-blue-500 shrink-0" />
+              <span className="truncate">Complete</span>
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

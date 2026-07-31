@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,11 +23,13 @@ import {
   ImagePlus,
   DollarSign,
   MapPin,
+  Loader2,
 } from "lucide-react";
 import {
   crateProperty,
   PropertyPayload,
 } from "../../_actions/Landlord/CreatePropertyA";
+import { toast } from "sonner";
 
 export type Category = {
   id: string;
@@ -36,66 +41,81 @@ type CreatePropertyFormProps = {
   categories: Category[];
 };
 
+const createPropertySchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  location: z.string().min(1, "Location is required"),
+  pricePerMonth: z.coerce.number().min(1, "Price must be greater than 0"),
+  categoryId: z.string().min(1, "Category is required"),
+  amenities: z.array(z.object({ value: z.string() })),
+  images: z.array(z.object({ value: z.string() })),
+});
+
+type CreatePropertyFormValues = z.infer<typeof createPropertySchema>;
+
 export default function CreatePropertyForm({
   categories,
 }: CreatePropertyFormProps) {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    location: "",
-    pricePerMonth: "",
-    categoryId: "",
-    amenities: [""],
-    images: [""],
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreatePropertyFormValues>({
+    resolver: zodResolver(createPropertySchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      location: "",
+      pricePerMonth: undefined,
+      categoryId: "",
+      amenities: [{ value: "" }],
+      images: [{ value: "" }],
+    },
   });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    fields: amenityFields,
+    append: appendAmenity,
+    remove: removeAmenity,
+  } = useFieldArray({
+    control,
+    name: "amenities",
+  });
 
-  const handleCategoryChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, categoryId: value }));
-  };
+  const {
+    fields: imageFields,
+    append: appendImage,
+    remove: removeImage,
+  } = useFieldArray({
+    control,
+    name: "images",
+  });
 
-  const handleArrayChange = (
-    index: number,
-    value: string,
-    field: "amenities" | "images",
-  ) => {
-    const updated = [...formData[field]];
-    updated[index] = value;
-    setFormData((prev) => ({ ...prev, [field]: updated }));
-  };
-
-  const addArrayField = (field: "amenities" | "images") => {
-    setFormData((prev) => ({ ...prev, [field]: [...prev[field], ""] }));
-  };
-
-  const removeArrayField = (index: number, field: "amenities" | "images") => {
-    if (formData[field].length === 1) return;
-    const updated = formData[field].filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, [field]: updated }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const payload = {
-      title: formData.title,
-      description: formData.description,
-      location: formData.location,
-      pricePerMonth: Number(formData.pricePerMonth),
-      categoryId: formData.categoryId,
-      amenities: formData.amenities.filter((item) => item.trim() !== ""),
-      images: formData.images.filter((item) => item.trim() !== ""),
+  const onSubmit = async (data: CreatePropertyFormValues) => {
+    const payload: PropertyPayload = {
+      title: data.title,
+      description: data.description,
+      location: data.location,
+      pricePerMonth: Number(data.pricePerMonth),
+      categoryId: data.categoryId,
+      amenities: data.amenities
+        .map((item) => item.value.trim())
+        .filter((item) => item !== ""),
+      images: data.images
+        .map((item) => item.value.trim())
+        .filter((item) => item !== ""),
     };
 
     const res = await crateProperty({ payload });
-    if (res.success) {
-      alert("property added successfull");
+    if (res?.success) {
+      toast.success("Property added successfully!");
+      reset();
+    } else {
+      toast.error(res?.message || "Failed to create property.");
     }
   };
 
@@ -108,26 +128,25 @@ export default function CreatePropertyForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Property Title</Label>
             <Input
               id="title"
-              name="title"
               placeholder="enter the property title"
-              value={formData.title}
-              onChange={handleInputChange}
-              required
+              {...register("title")}
             />
+            {errors.title && (
+              <p className="text-xs text-destructive">{errors.title.message}</p>
+            )}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="categoryId"> Category</Label>
+              <Label htmlFor="categoryId">Category</Label>
               <Select
-                value={formData.categoryId}
-                required
-                onValueChange={handleCategoryChange}
+                value={watch("categoryId")}
+                onValueChange={(val) => setValue("categoryId", val!)}
               >
                 <SelectTrigger id="categoryId" className="w-full">
                   <SelectValue placeholder="Select category" />
@@ -140,23 +159,30 @@ export default function CreatePropertyForm({
                   ))}
                 </SelectContent>
               </Select>
+              {errors.categoryId && (
+                <p className="text-xs text-destructive">
+                  {errors.categoryId.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="pricePerMonth">Price Per Month (BDT)</Label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-2 h-4 w-4 text-muted-foreground" />
+                <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="pricePerMonth"
-                  name="pricePerMonth"
                   type="number"
                   placeholder="e.g. 75000"
                   className="pl-9"
-                  value={formData.pricePerMonth}
-                  onChange={handleInputChange}
-                  required
+                  {...register("pricePerMonth")}
                 />
               </div>
+              {errors.pricePerMonth && (
+                <p className="text-xs text-destructive">
+                  {errors.pricePerMonth.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -166,47 +192,48 @@ export default function CreatePropertyForm({
               <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 id="location"
-                name="location"
                 placeholder="enter the location"
                 className="pl-9"
-                value={formData.location}
-                onChange={handleInputChange}
-                required
+                {...register("location")}
               />
             </div>
+            {errors.location && (
+              <p className="text-xs text-destructive">
+                {errors.location.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              name="description"
               placeholder="Provide a detailed description of the property..."
               rows={4}
-              value={formData.description}
-              onChange={handleInputChange}
-              required
+              {...register("description")}
             />
+            {errors.description && (
+              <p className="text-xs text-destructive">
+                {errors.description.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-3">
             <Label>Amenities</Label>
-            {formData.amenities.map((amenity, index) => (
-              <div key={index} className="flex items-center gap-2">
+            {amenityFields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-2">
                 <Input
                   placeholder="e.g. WiFi, Lift, Refrigerator Filter"
-                  value={amenity}
-                  onChange={(e) =>
-                    handleArrayChange(index, e.target.value, "amenities")
-                  }
+                  {...register(`amenities.${index}.value`)}
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
-                  onClick={() => removeArrayField(index, "amenities")}
-                  disabled={formData.amenities.length === 1}
-                  className="shrink-0"
+                  onClick={() => removeAmenity(index)}
+                  disabled={amenityFields.length === 1}
+                  className="shrink-0 cursor-pointer"
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
@@ -216,8 +243,8 @@ export default function CreatePropertyForm({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => addArrayField("amenities")}
-              className="mt-1 gap-1 text-xs"
+              onClick={() => appendAmenity({ value: "" })}
+              className="mt-1 gap-1 text-xs cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add Amenity
             </Button>
@@ -225,26 +252,23 @@ export default function CreatePropertyForm({
 
           <div className="space-y-3">
             <Label>Image URLs</Label>
-            {formData.images.map((imgUrl, index) => (
-              <div key={index} className="flex items-center gap-2">
+            {imageFields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-2">
                 <div className="relative flex-1">
                   <ImagePlus className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="https://res.cloudinary.com/..."
                     className="pl-9"
-                    value={imgUrl}
-                    onChange={(e) =>
-                      handleArrayChange(index, e.target.value, "images")
-                    }
+                    {...register(`images.${index}.value`)}
                   />
                 </div>
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
-                  onClick={() => removeArrayField(index, "images")}
-                  disabled={formData.images.length === 1}
-                  className="shrink-0"
+                  onClick={() => removeImage(index)}
+                  disabled={imageFields.length === 1}
+                  className="shrink-0 cursor-pointer"
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
@@ -254,15 +278,25 @@ export default function CreatePropertyForm({
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => addArrayField("images")}
-              className="mt-1 gap-1 text-xs"
+              onClick={() => appendImage({ value: "" })}
+              className="mt-1 gap-1 text-xs cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add Image URL
             </Button>
           </div>
 
-          <Button type="submit" className="w-full font-semibold">
-            Create Property
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full font-semibold cursor-pointer"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...
+              </>
+            ) : (
+              "Create Property"
+            )}
           </Button>
         </form>
       </CardContent>
