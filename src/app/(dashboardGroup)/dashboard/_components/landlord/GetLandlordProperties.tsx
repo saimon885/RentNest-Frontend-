@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import DeleteProperty from "./DeleteProperty";
+import EditProperty, { PropertyListing } from "./EditProperty";
 
 export type LandlordProperty = {
   id: string;
@@ -98,14 +99,9 @@ const GetLandlordProperties = ({
             </div>
 
             <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 h-8 text-xs font-medium cursor-pointer"
-              >
-                <Pencil className="h-3.5 w-3.5 mr-1" />
-                Edit
-              </Button>
+              <EditProperty
+                property={property as PropertyListing}
+              ></EditProperty>
               <DeleteProperty propertyId={property.id}></DeleteProperty>
             </div>
           </CardContent>
