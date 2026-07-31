@@ -22,7 +22,10 @@ const LandlordOverview = async () => {
       headers: {
         Authorization: `${accessToken}`,
       },
-      cache: "no-store",
+      cache: "force-cache",
+      next: {
+        tags: ["my-properties"],
+      },
     },
   );
 

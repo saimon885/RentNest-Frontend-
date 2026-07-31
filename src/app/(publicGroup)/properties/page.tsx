@@ -6,7 +6,10 @@ import PropertiesCard, {
 const Properties = async () => {
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
-  const data = await fetch(`${process.env.SERVER_API_URL}/api/properties`);
+  const data = await fetch(`${process.env.SERVER_API_URL}/api/properties`, {
+    cache: "force-cache",
+    next: { tags: ["properties"] },
+  });
   await delay(2000);
   const allProperties = await data.json();
   const properties: Property[] = allProperties?.data;

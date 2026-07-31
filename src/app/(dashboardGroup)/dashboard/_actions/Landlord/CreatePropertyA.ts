@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 export interface PropertyPayload {
   title: string;
@@ -36,5 +38,11 @@ export const crateProperty = async ({ payload }: CrProp) => {
     },
   );
   const result = await res.json();
+  if (result?.success || res.ok) {
+    revalidateTag("properties", "max");
+    revalidatePath("/properties");
+    revalidateTag("my-properties", "max");
+    revalidatePath("/dashboard/landlord/properties");
+  }
   return result;
 };

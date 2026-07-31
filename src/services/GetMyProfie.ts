@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export const GetMyProfile = async () => {
   const cookieStore = await cookies();
-  const accessToken = await cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
   //   console.log(accessToken);
   if (!accessToken) {
     return {
@@ -16,6 +16,7 @@ export const GetMyProfile = async () => {
     headers: {
       Authorization: `${accessToken}`,
     },
+    cache: "no-store",
   });
   const result = await res.json();
   return result;

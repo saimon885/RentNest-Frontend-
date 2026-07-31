@@ -12,6 +12,7 @@ import {
   Menu,
   UserCheck,
   FilePlusCorner,
+  SavePlus,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -39,14 +40,19 @@ export const TENANT_NAV_ITEMS: NavItem[] = [
 export const LANDLORD_NAV_ITEMS: NavItem[] = [
   { label: "Overview", href: "/dashboard/landlord", icon: LayoutDashboard },
   {
-    label: "New Properties",
-    href: "/dashboard/landlord/properties",
-    icon: FilePlusCorner,
-  },
-  {
     label: "Rental Requests",
     href: "/dashboard/landlord/requests",
     icon: UserCheck,
+  },
+  {
+    label: "Category",
+    href: "/dashboard/landlord/category",
+    icon: SavePlus,
+  },
+  {
+    label: "New Properties",
+    href: "/dashboard/landlord/properties",
+    icon: FilePlusCorner,
   },
 ];
 
