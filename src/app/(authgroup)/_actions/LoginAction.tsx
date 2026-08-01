@@ -16,47 +16,65 @@ const LoginAction = async (
 ): Promise<LoginResponse> => {
   const email = formData.get("email");
   const password = formData.get("password")?.toString();
-  console.log("server", redirectTo);
   const payload = { email, password };
 
   if (!email || !password) {
-    return { success: false, message: "Email and password must be required!" };
+    return { success: false, message: "Email and password are required!" };
   }
 
-  const res = await fetch(`${process.env.SERVER_API_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      "content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-  const result = await res.json();
-  if (result.success) {
+  let redirectUrl = "";
+
+  try {
+    const res = await fetch(`${process.env.SERVER_API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success || !result?.data?.accessToken) {
+      return {
+        success: false,
+        message: result?.message || "Invalid email or password!",
+      };
+    }
     const cookieStore = await cookies();
     cookieStore.set("accessToken", result.data.accessToken, {
       httpOnly: true,
       maxAge: 60 * 60 * 24,
       sameSite: "lax",
     });
+
+    const deccodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
+    if (
+      redirectTo &&
+      typeof redirectTo === "string" &&
+      redirectTo.startsWith("/") &&
+      !redirectTo.startsWith("//")
+    ) {
+      redirectUrl = redirectTo;
+    } else if (deccodedToken?.role === "TENANT") {
+      redirectUrl = "/dashboard/tenant";
+    } else if (deccodedToken?.role === "LANDLORD") {
+      redirectUrl = "/dashboard/landlord";
+    } else if (deccodedToken?.role === "ADMIN") {
+      redirectUrl = "/dashboard/admin";
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong!",
+    };
   }
-  const deccodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
-  if (
-    redirectTo &&
-    typeof redirectTo === "string" &&
-    redirectTo.startsWith("/") &&
-    !redirectTo.startsWith("//")
-  ) {
-    redirect(redirectTo);
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
-  //   console.log(deccodedToken);
-  if (deccodedToken.role === "TENANT") {
-    redirect("/dashboard/tenant");
-  } else if (deccodedToken.role === "LANDLORD") {
-    redirect("/dashboard/landlord");
-  } else if (deccodedToken.role === "ADMIN") {
-    redirect("/dashboard/admin");
-  }
-  return result;
+
+  return { success: true, message: "Login Successful" };
 };
 
 export default LoginAction;
