@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 interface UpdatePayload {
   title: string;
@@ -38,12 +38,18 @@ export const editProperty = async ({ id, payload }: EditPropParams) => {
           "Content-Type": "application/json",
           Authorization: `${accessToken}`,
         },
+
         body: JSON.stringify(payload),
       },
     );
 
     const result = await res.json();
-    revalidatePath("/dashboard/landlord");
+    if (result?.success || res.ok) {
+      revalidatePath("/properties");
+      revalidatePath("/dashboard/landlord/properties");
+      revalidateTag("my-properties", "max");
+    }
+
     return result;
   } catch (error) {
     return {

@@ -14,6 +14,10 @@ export async function proxy(request: NextRequest) {
     : null;
 
   let UserRole = null;
+  if (!decoddedAccessToken?.success) {
+    cookieStore.delete("accessToken");
+  }
+
   if (decoddedAccessToken && decoddedAccessToken.data) {
     UserRole = decoddedAccessToken.data.role;
   }

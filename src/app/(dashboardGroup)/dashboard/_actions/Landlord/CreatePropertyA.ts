@@ -34,6 +34,7 @@ export const crateProperty = async ({ payload }: CrProp) => {
         "Content-Type": "application/json",
         Authorization: `${accessToken}`,
       },
+     
       body: JSON.stringify(payload),
     },
   );

@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { ProprertyProp } from "../../_components/landlord/DeleteProperty";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const deleteProperty = async ({ propertyId }: ProprertyProp) => {
   const cookieStore = await cookies();
@@ -23,10 +23,14 @@ export const deleteProperty = async ({ propertyId }: ProprertyProp) => {
         headers: {
           Authorization: `${accessToken}`,
         },
+        next: {
+          tags: ["my-properties"],
+        },
       },
     );
 
     const result = await res.json();
+    revalidateTag("my-properties", "max");
     revalidatePath("/dashboard/landlord");
     return result;
   } catch (error) {
