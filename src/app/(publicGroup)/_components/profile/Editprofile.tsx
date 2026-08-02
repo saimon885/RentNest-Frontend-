@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Edit, Loader2 } from "lucide-react";
 import { UserProfile } from "../../profile/page";
 import { updateProfileName } from "./updateProfile";
+import { toast } from "sonner";
 
 interface UserData {
   user: UserProfile;
@@ -36,7 +37,7 @@ const EditProfileDialog = ({ user }: UserData) => {
     if (result.success) {
       setOpen(false);
     } else {
-      alert(result.error || "Update failed");
+      toast.error(result.error || "Update failed");
     }
   };
 

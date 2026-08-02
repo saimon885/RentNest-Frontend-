@@ -5,9 +5,6 @@ import Link from "next/link";
 import {
   User,
   LogOut,
-  Settings,
-  HelpCircle,
-  Bell,
   Menu,
   X,
   LayoutDashboard,
@@ -103,15 +100,6 @@ export default function NavbarClient({ user, navLinks }: NavbarClientProps) {
                 >
                   <LayoutDashboard size={16} />
                   <span>Dashboard</span>
-                </Link>
-
-                <Link
-                  href="/help"
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition"
-                >
-                  <HelpCircle size={16} />
-                  <span>Help & Support</span>
                 </Link>
 
                 <div

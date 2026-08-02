@@ -25,9 +25,13 @@ const RentalReqButton = ({ property }: prop) => {
   useEffect(() => {
     if (state?.success && open) {
       toast.success("Request Submit.");
-      setOpen(false);
+      const timer = setTimeout(() => {
+        setOpen(false);
+      }, 0);
+
+      return () => clearTimeout(timer);
     }
-  }, [state, open]);
+  }, [state?.success, open]);
 
   return (
     <>
@@ -47,7 +51,6 @@ const RentalReqButton = ({ property }: prop) => {
           </DialogHeader>
 
           <form action={action} className="space-y-4 pt-2">
-            {/* Property ID Hidden Field */}
             <input type="hidden" name="propertyId" value={property.id} />
 
             <div className="space-y-1">

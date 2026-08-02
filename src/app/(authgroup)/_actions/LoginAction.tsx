@@ -67,7 +67,7 @@ const LoginAction = async (
     console.error("Login Error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong!",
+      message: "Something went wrong!",
     };
   }
   if (redirectUrl) {

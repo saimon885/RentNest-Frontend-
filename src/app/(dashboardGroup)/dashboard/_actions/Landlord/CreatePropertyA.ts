@@ -19,7 +19,7 @@ type CrProp = {
 export const crateProperty = async ({ payload }: CrProp) => {
   const cookieStore = await cookies();
   const accessToken = await cookieStore.get("accessToken")?.value;
-  console.log(payload);
+  // console.log(payload);
   if (!accessToken) {
     return {
       success: false,

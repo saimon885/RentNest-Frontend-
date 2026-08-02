@@ -6,15 +6,25 @@
 
   <br />
 
-  [![Live Demo](https://img.shields.io/badge/Live%20Demo-RentNest-emerald?style=for-the-badge&logo=vercel)](https://rent-nest-gamma.vercel.app)
-  [![Frontend Repo](https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github)](https://github.com/saimon885/RentNest-Frontend-)
-  [![Backend Repo](https://img.shields.io/badge/Backend-Repository-black?style=for-the-badge&logo=github)](https://github.com/saimon885/RentNest-Backend_B7A4)
+  [![Live Demo](https://img.shields.io/badge/Live%20Demo-Frontend-emerald?style=for-the-badge&logo=vercel)](https://rent-nest-client-nu.vercel.app)
+  [![Backend Live](https://img.shields.io/badge/Live%20API-Backend-red?style=for-the-badge&logo=render)](https://rentnest-backend-b7a4.onrender.com)
+  [![Frontend Repo](https://img.shields.io/badge/Frontend-Repository-blue?style=for-the-badge&logo=github)](https://github.com/saimon885/RentNest-Frontend-.git)
+  [![Backend Repo](https://img.shields.io/badge/Backend-Repository-black?style=for-the-badge&logo=github)](https://github.com/saimon885/RentNest-Backend_B7A4.git)
 
   <p align="center">
     <b>A full-stack, enterprise-grade rental property management ecosystem designed to seamlessly connect Tenants, Landlords, and Administrators.</b>
   </p>
 
 </div>
+
+---
+
+## 🔗 Quick Links
+
+* 🌐 **Frontend Live Application:** [https://rent-nest-client-nu.vercel.app](https://rent-nest-client-nu.vercel.app)
+* ⚙️ **Backend Live API:** [https://rentnest-backend-b7a4.onrender.com](https://rentnest-backend-b7a4.onrender.com)
+* 🖥️ **Frontend Repository:** [GitHub - RentNest Frontend](https://github.com/saimon885/RentNest-Frontend-.git)
+* 🛠️ **Backend Repository:** [GitHub - RentNest Backend](https://github.com/saimon885/RentNest-Backend_B7A4.git)
 
 ---
 
@@ -61,6 +71,7 @@
 * **Database:** PostgreSQL
 * **Language:** TypeScript
 * **Payment Gateway:** Stripe API
+* **Deployment:** Render
 
 ---
 
@@ -103,6 +114,7 @@
 * **npm** or **yarn**
 
 ### 1. Clone Repositories
+
 ```bash
 # Clone Backend
 git clone [https://github.com/saimon885/RentNest-Backend_B7A4.git](https://github.com/saimon885/RentNest-Backend_B7A4.git)

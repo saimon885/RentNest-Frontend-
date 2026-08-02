@@ -3,7 +3,7 @@ import HomeProperties from "@/components/home/HomeProperties";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { LandlordCTA } from "@/components/home/LandlordCTA";
 import { PopularLocations } from "@/components/home/PopularLocations";
-
+export const dynamic = "force-dynamic";
 export default function Home() {
   return (
     <div className="min-h-[100vh]">

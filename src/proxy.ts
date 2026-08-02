@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtutils } from "./utils/jwt";
 const AUTH_ROUTES = ["/login", "/register"];
-const PUBLIC_ROUTES = ["/", "/properties"];
+const PUBLIC_ROUTES = ["/", "/properties", "/about"];
 export async function proxy(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
   const cookieStore = await cookies();

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import React, { useTransition } from "react";
 import { PayNowActions } from "./payNowActons";
+import { toast } from "sonner";
 
 type prop = {
   id: string;
@@ -18,7 +19,7 @@ const PayNowBTN = ({ id }: prop) => {
       if (res?.success && res?.data) {
         window.location.href = res.data;
       } else {
-        alert(res?.message || "Something went wrong!");
+        toast.error(res?.message || "Something went wrong!");
       }
     });
   };
